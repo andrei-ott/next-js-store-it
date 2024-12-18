@@ -15,6 +15,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import FileUploader from "@/components/FileUploader";
 import { Button } from "@/components/ui/button";
+import { signOutUser } from "@/lib/actions/user.actions";
 
 interface Props {
   $id: string;
@@ -107,7 +108,11 @@ const MobileNavigation = ({
           <div className="flex flex-col justify-between gap-5">
             <FileUploader />
 
-            <Button type="submit" className="mobile-sign-out-button">
+            <Button
+              type="submit"
+              className="mobile-sign-out-button"
+              onClick={async () => await signOutUser()}
+            >
               <Image
                 src="/assets/icons/logout.svg"
                 alt="logout"

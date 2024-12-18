@@ -42,9 +42,9 @@ const OtpModal = ({
       if (sessionId) router.push("/");
     } catch (error) {
       console.log("Failed to verify OTP", error);
-    }
 
-    setIsLoading(false);
+      setIsLoading(false);
+    }
   };
 
   const handleResendOTP = async () => {
@@ -90,6 +90,7 @@ const OtpModal = ({
               onClick={handleSubmit}
               className="shad-submit-btn h-12"
               type="button"
+              disabled={isLoading}
             >
               Submit
               {isLoading && (
