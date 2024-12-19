@@ -24,7 +24,11 @@ import { constructDownloadUrl, getFileNameWithoutExtension } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { usePathname } from "next/navigation";
-import { renameFile, updateFileUsers } from "@/lib/actions/file.actions";
+import {
+  deleteFile,
+  renameFile,
+  updateFileUsers,
+} from "@/lib/actions/file.actions";
 import { FileDetails, ShareInput } from "@/components/ActionsModalContent";
 
 const ActionDropdown = ({ file }: { file: Models.Document }) => {
@@ -53,7 +57,6 @@ const ActionDropdown = ({ file }: { file: Models.Document }) => {
     if (!action) return;
 
     setIsLoading(true);
-    let success = false;
 
     const actions = {
       rename: () =>
@@ -64,9 +67,11 @@ const ActionDropdown = ({ file }: { file: Models.Document }) => {
           emails: file.users.concat(emails),
           path,
         }),
+      delete: () =>
+        deleteFile({ fileId: file.$id, bucketFileId: file.bucketFileId, path }),
     };
 
-    success = await actions[action.value as keyof typeof actions]();
+    const success = await actions[action.value as keyof typeof actions]();
 
     if (success) {
       closeAllModals();
@@ -112,6 +117,12 @@ const ActionDropdown = ({ file }: { file: Models.Document }) => {
               onInputChange={setEmails}
               onRemove={handleRemoveUser}
             />
+          )}
+          {value === "delete" && (
+            <p className="delete-confirmation">
+              Are you sure you want to delete{" "}
+              <span className="delete-file-name">{file.name}</span>?
+            </p>
           )}
         </DialogHeader>
 
