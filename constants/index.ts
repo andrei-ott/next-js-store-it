@@ -26,7 +26,7 @@ export const navItems = [
   },
 ];
 
-export const actionsDropdownItems = [
+export const actionsDropdownItems: ActionType[] = [
   {
     label: "Rename",
     icon: "/assets/icons/edit.svg",
