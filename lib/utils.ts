@@ -32,6 +32,12 @@ export const calculatePercentage = (sizeInBytes: number) => {
   return Number(percentage.toFixed(2));
 };
 
+export const getFileNameWithoutExtension = (fileName: string) => {
+  const splitFileName = fileName.split(".");
+  splitFileName.pop();
+  return splitFileName.join(".");
+};
+
 export const getFileType = (fileName: string) => {
   const extension = fileName.split(".").pop()?.toLowerCase();
 

@@ -3,7 +3,6 @@
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -17,30 +16,55 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Models } from "node-appwrite";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { actionsDropdownItems } from "@/constants";
 import Link from "next/link";
-import { constructDownloadUrl } from "@/lib/utils";
+import { constructDownloadUrl, getFileNameWithoutExtension } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { usePathname } from "next/navigation";
+import { renameFile } from "@/lib/actions/file.actions";
 
 const ActionDropdown = ({ file }: { file: Models.Document }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [action, setAction] = useState<ActionType | null>(null);
-  const [name, setName] = useState(file.name);
+  const [name, setName] = useState(getFileNameWithoutExtension(file.name));
   const [isLoading, setIsLoading] = useState(false);
+
+  const path = usePathname();
+
+  useEffect(() => {
+    setName(getFileNameWithoutExtension(file.name));
+  }, [file]);
 
   const closeAllModals = () => {
     setIsModalOpen(false);
     setIsDropdownOpen(false);
     setAction(null);
-    setName(file.name);
+    setName(getFileNameWithoutExtension(file.name));
     // setEmails([]);
   };
 
-  const handleAction = async () => {};
+  const handleAction = async () => {
+    if (!action) return;
+
+    setIsLoading(true);
+    let success = false;
+
+    const actions = {
+      rename: () =>
+        renameFile({ fileId: file.$id, name, extension: file.extension, path }),
+    };
+
+    success = await actions[action.value as keyof typeof actions]();
+
+    if (success) {
+      closeAllModals();
+    }
+    setIsLoading(false);
+  };
 
   const renderDialogContent = () => {
     if (!action) return null;
