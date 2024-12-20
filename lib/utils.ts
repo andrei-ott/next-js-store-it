@@ -191,6 +191,7 @@ export const constructDownloadUrl = (bucketFileId: string) => {
 };
 
 // DASHBOARD UTILS
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const getUsageSummary = (totalSpace: any) => {
   return [
     {
@@ -227,7 +228,7 @@ export const getUsageSummary = (totalSpace: any) => {
   ];
 };
 
-export const getFileTypesParams = (type: string) => {
+export const getFileTypesParams = (type: string): FileType[] => {
   switch (type) {
     case "documents":
       return ["document"];
