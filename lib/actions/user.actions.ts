@@ -13,7 +13,7 @@ const getUserByEmail = async (email: string) => {
 
   const result = await databases.listDocuments(
     appwriteConfig.databaseId,
-    appwriteConfig.userCollectionId,
+    appwriteConfig.usersCollectionId,
     [Query.equal("email", [email])],
   );
 
@@ -54,7 +54,7 @@ export const createAccount = async ({
 
     await databases.createDocument(
       appwriteConfig.databaseId,
-      appwriteConfig.userCollectionId,
+      appwriteConfig.usersCollectionId,
       ID.unique(),
       {
         fullName,
@@ -94,19 +94,23 @@ export const verifySecret = async ({
 };
 
 export const getCurrentUser = async () => {
-  const { databases, account } = await createSessionClient();
+  try {
+    const { databases, account } = await createSessionClient();
 
-  const result = await account.get();
+    const result = await account.get();
 
-  const user = await databases.listDocuments(
-    appwriteConfig.databaseId,
-    appwriteConfig.userCollectionId,
-    [Query.equal("accountId", result.$id)],
-  );
+    const user = await databases.listDocuments(
+      appwriteConfig.databaseId,
+      appwriteConfig.usersCollectionId,
+      [Query.equal("accountId", result.$id)],
+    );
 
-  if (user.total <= 0) return null;
+    if (user.total <= 0) return null;
 
-  return parseStringify(user.documents[0]);
+    return parseStringify(user.documents[0]);
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export const signOutUser = async () => {
